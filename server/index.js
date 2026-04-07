@@ -10,7 +10,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*",
     methods: ["GET", "POST"]
   }
 });
@@ -39,29 +39,17 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/messages', messageRoutes);
 
-const User = require('./models/User');
-
 io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
-
   socket.on('join_room', (userId) => {
     socket.join(userId);
-    console.log(`User ${userId} joined room ${userId}`);
-  });
-
-  socket.on('send_message', (data) => {
-    const { receiverId, message, senderId } = data;
-    socket.to(receiverId).emit('receive_message', {
-      senderId,
-      message,
-      timestamp: new Date()
-    });
+    console.log(`User ${userId} joined room`);
   });
 
   socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
+    console.log('User disconnected');
   });
 });
+
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

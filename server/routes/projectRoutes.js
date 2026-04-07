@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const auth = require("../middleware/auth");
 const { 
   createProject, 
   getAllProjects, 
@@ -7,9 +8,9 @@ const {
   getProject, 
   updateProject, 
   deleteProject, 
-  likeProject,
-  auth 
+  likeProject
 } = require("../controllers/projectController");
+
 
 router.post("/", auth, createProject);
 router.get("/", getAllProjects);

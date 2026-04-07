@@ -4,7 +4,8 @@ import { getConversations, getMessages, sendMessage, getAllUsers } from '../api'
 import io from 'socket.io-client';
 
 // In a real app, the base URL would be from an env variable
-const socket = io('http://localhost:5000');
+const socket = io();
+
 
 const Messages = () => {
   const [conversations, setConversations] = useState([]);
