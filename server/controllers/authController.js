@@ -18,14 +18,29 @@ const auth = (req, res, next) => {
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, github, skills } = req.body;
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) return res.status(400).json({ message: "User already exists" });
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, email, password: hashedPassword });
+    const newUser = new User({ 
+        username, 
+        email, 
+        password: hashedPassword,
+        github: github || '',
+        skills: skills || []
+    });
     await newUser.save();
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
-    res.status(201).json({ token, user: { id: newUser._id, username, email } });
+    res.status(201).json({ 
+        token, 
+        user: { 
+            id: newUser._id, 
+            username, 
+            email,
+            github: newUser.github,
+            skills: newUser.skills
+        } 
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
